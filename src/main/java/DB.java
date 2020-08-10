@@ -12,7 +12,6 @@ public class DB {
     static String password = "Konstantin91";
 
         public static String selectCustomerId(String faId) {
-            faId = "654010381111";
             String query = "select tc.s_customer_id\n" +
                     "  from table_customer tc\n" +
                     "  join table_con_fin_accnt_role con\n" +
