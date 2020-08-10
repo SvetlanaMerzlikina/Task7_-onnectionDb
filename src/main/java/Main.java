@@ -3,15 +3,18 @@ import org.junit.Test;
 
 public class Main {
 
+
     @Test
     public void test1(){
-        Assert.assertTrue(true);
-        System.out.println(DB.selectCustomerId("654010381111"));
-        System.out.println("Склонность к оттоку: ");
-        System.out.println(DB.selectTitle(209177052, ""));
-        System.out.println(DB.selectObjId(209177052));
-        DB.updateObjId(209177052, 5911);
-        System.out.println(DB.selectObjId(209177052));
+
+        System.out.println(DB.selectCustomerId(DB.selectCustomerId("faId")));
+        System.out.println(DB.selectObjId(DB.selectCustomerId("faId")));
+        String newObjidTitle;
+        if (DB.selectObjId(DB.selectCustomerId("faId")).get("objid").equals("5911"))
+            newObjidTitle = "5912";
+        else newObjidTitle = "5911";
+        DB.updateObjId(DB.selectCustomerId("faId"),newObjidTitle);
+        System.out.println(DB.selectObjId(DB.selectCustomerId("faId")));
 
     }
 

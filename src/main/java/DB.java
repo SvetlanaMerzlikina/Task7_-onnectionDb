@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
 
 public class DB {
 
@@ -11,6 +12,7 @@ public class DB {
     static String password = "Konstantin91";
 
         public static String selectCustomerId(String faId) {
+            faId = "654010381111";
             String query = "select tc.s_customer_id\n" +
                     "  from table_customer tc\n" +
                     "  join table_con_fin_accnt_role con\n" +
@@ -31,58 +33,49 @@ public class DB {
             return customerId;
         }
 
-    public static String selectObjId(int Objid) {
+    public static HashMap<String, String> selectObjId(String customerId) {
         String query = "select hg.objid, hg.title\n" +
                 "  from table_customer tc\n" +
                 "  join table_hgbst_elm hg\n" +
                 "    on tc.x_propensity_drain2hgbst_elm = hg.objid\n" +
-                " where tc.s_customer_id = '" + Objid + "'";
+                " where tc.s_customer_id = '" + customerId + "'";
         String objid = "";
+        String title = "";
+
         try (Connection con = getConnection();
              PreparedStatement statement = con.prepareStatement(query);
              ResultSet result = statement.executeQuery()) {
             while (result.next()) {
                 objid = result.getString(1);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return objid;
-    }
-
-    public static String selectTitle(int objid, String Title) {
-        String query = "select hg.objid, hg.title\n" +
-                "  from table_customer tc\n" +
-                "  join table_hgbst_elm hg\n" +
-                "    on tc.x_propensity_drain2hgbst_elm = hg.objid\n" +
-                " where tc.s_customer_id = '" + objid + "'";
-        String title = "";
-        try (Connection con = getConnection();
-             PreparedStatement statement = con.prepareStatement(query);
-             ResultSet result = statement.executeQuery()) {
-            while (result.next()) {
                 title = result.getString(2);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return title;
+
+        HashMap<String,String> customerInfo = new HashMap<>();
+        customerInfo.put("objid", objid);
+        customerInfo.put("title", title);
+
+        return customerInfo;
+
     }
 
-    public static void updateObjId(int objid, int newObjidTitle) {
+    public static void updateObjId(String customerId, String newObjidTitle) {
         String query = "update table_customer\n" +
                 "   set x_propensity_drain2hgbst_elm = '" + newObjidTitle +"'\n" +
-                " where s_customer_id = '" + objid + "'";
+                " where s_customer_id = '" + customerId + "'";
         try (Connection con = getConnection();
              PreparedStatement statement = con.prepareStatement(query)) {
              statement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
+
         }
+
     }
 
     public static Connection getConnection() {
-        //  Connection con = null;
         try {
             Class.forName(driver);
             return DriverManager.getConnection(url, user, password);
@@ -92,6 +85,6 @@ public class DB {
         return null;
     }
 
-    }
+}
 
 
